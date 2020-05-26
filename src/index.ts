@@ -30,14 +30,16 @@ let dropInterval = 1000;
 
 let lastTime = 0;
 function update(time = 0) {
-  const deltaTime = time - lastTime;
-  lastTime = time;
+  if (!isColliding('bottom')) {
+    const deltaTime = time - lastTime;
+    lastTime = time;
 
-  dropCounter += deltaTime;
+    dropCounter += deltaTime;
 
-  if (dropCounter > dropInterval) {
-    player.pos.y += 1;
-    dropCounter = 0;
+    if (dropCounter > dropInterval) {
+      player.pos.y += 1;
+      dropCounter = 0;
+    }
   }
 
   draw();
@@ -45,23 +47,34 @@ function update(time = 0) {
 }
 
 const player = {
-  pos: { x: 0, y: 0 },
+  pos: { x: 5, y: 18 },
   matrix: T_Piece.matrix,
 };
 
 document.addEventListener('keydown', function(event) {
-  if (checkKey.Left(event.keyCode)) {
+  if (checkKey.Left(event.keyCode) && !isColliding('left')) {
     player.pos.x -= 1;
-  } else if (checkKey.Right(event.keyCode)) {
+  } else if (checkKey.Right(event.keyCode) && !isColliding('right')) {
     player.pos.x += 1;
   } else if (checkKey.Up(event.keyCode)) {
     T_Piece.rotate();
-    console.log({ T_Piece: T_Piece.matrix, matrix: player.matrix });
-  } else if (checkKey.Down(event.keyCode)) {
+  } else if (checkKey.Down(event.keyCode) && !isColliding('bottom')) {
     player.pos.y += 1;
     dropCounter = 0;
   }
 });
+
+function isColliding(edge: string): boolean {
+  if (edge === 'bottom') {
+    return player.pos.y >= 21;
+  } else if (edge === 'left') {
+    return player.pos.x <= 0;
+  } else if (edge === 'right') {
+    return player.pos.x >= 9;
+  }
+
+  return false;
+}
 
 const checkKey = {
   Left: keyCode => keyCode === 37,
