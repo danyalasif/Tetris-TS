@@ -1,6 +1,11 @@
 import TPiece from './TPiece';
+import LPiece from './LPiece';
+
 let T_Piece = new TPiece();
+let L_Piece = new LPiece();
 T_Piece.build();
+L_Piece.build();
+
 const canvas: HTMLCanvasElement = document.querySelector('#tetris');
 const ctx = canvas!.getContext('2d');
 
@@ -40,13 +45,18 @@ function update(time = 0) {
       player.pos.y += 1;
       dropCounter = 0;
     }
+  } else {
+    player = {
+      pos: { x: 5, y: 18 },
+      matrix: L_Piece.matrix,
+    };
   }
 
   draw();
   requestAnimationFrame(update);
 }
 
-const player = {
+let player = {
   pos: { x: 5, y: 18 },
   matrix: T_Piece.matrix,
 };
